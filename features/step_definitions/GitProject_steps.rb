@@ -1,7 +1,5 @@
 #Main page functionality - header navigation
 Then /^Check that menu item "([^"]*)" contains submenus$/ do |x|
-  driver = $driver
-  $driver.get("http://www.petsmart.com/")
   element = $driver.find_element(:xpath, "//ul[@class='ws-common-list pet-main-nav']/li[.//text()='#{x}']")
   $driver.action.move_to(element).perform
   $driver.find_element(:xpath, "//ul[@class='ws-common-list pet-main-nav']/li[div[contains(@class,'main-nav-dropdown')]]")
@@ -11,24 +9,18 @@ end
 
 #Scenario: Main page functionality - footer navigation
 Then(/^Check footer menu ([^"]*) with items$/) do |x|
-
-  $driver.get("http://www.petsmart.com/")
-  sleep 5
   footerElement = $driver.find_element(:xpath, "//div[@class='ws-header pet-nav-heading pet-footer-header'][.//h3[text()='#{x}']]")
   footerElement.displayed?
 end
 
 # to check the navigation to a new page and verify you are on the correct page
 Then /^Click on ([^"]*) icon$/ do |x|
-  driver = $driver
-  $driver.get("http://www.petsmart.com/")
-  element = $driver.find_element(:xpath, "//a[@title='#{x}']")
+   element = $driver.find_element(:xpath, "//a[@title='#{x}']")
   element. click
-
+  $driver.manage.timeouts.implicit_wait = 30
 end
+
 Then /^Verify navigation to ([^"]*)$/ do |x|
-  driver = $driver
-  $driver.get("http://www.petsmart.com/")
   $driver.find_element(:xpath, "//a[@title='#{x}']").click
   $driver. switch_to.window $driver.window_handles.last
   assert($driver.title.include?('PetSmart'))
@@ -38,21 +30,17 @@ end
 
 #Capture all the upcoming events
 Then /^Print out all upcoming events in wrapper$/ do
-  driver = $driver
-  $driver.get("http://www.petsmart.com/")
   element = $driver.find_element(:xpath, "//div[@class='monthly-event-title']")
   puts element.text
-
 end
 
 #search - valid & invalid searches
 Then /^In search type ([^"]*)$/ do |x|
-  driver = $driver
-  $driver.get("http://www.petsmart.com/")
   element = $driver.find_element(:id, "searchForm")
   element.send_keys "#{x}"
   element = $driver.find_element(:xpath, "//form/button[@title='Start search.']")
   element.click
+  $driver.manage.timeouts.implicit_wait = 30
 end
 Then /^Check that ([^"]*) returned$/ do |x|
   element = $driver.find_element(:xpath, "//h1[@class='ws-heading']")
@@ -71,9 +59,6 @@ end
 #in Pet service click on each item and verify that all promo messages are different
 
 Then /^in Pet service click on each item and verify that all promo messages are different$/ do
-
-  driver = $driver
-  $driver.get("http://www.petsmart.com/")
   array = $driver.find_elements(:xpath, "//ul[@class='pet-services__nav']//a")
   for element in array
     element.click
@@ -92,14 +77,12 @@ end
 #Dog - Food and health - Brands
 
 Then /^In "Dog" menu go to "Food & health"$/ do
-  driver = $driver
-  $driver.get("http://www.petsmart.com/")
-  sleep 8
   element = $driver.find_element(:xpath, "//li[@class='ws-common-list-item pet-main-nav-item-level1']//span[@class='ws-category-title' and text()='Dog']" )
   driver.action.move_to(element).perform
   element = $driver.find_element(:xpath, "//ul[@class='ws-category-list main-nav-subcat-list main-nav-dropdown-subcat-list']//span[@class='ws-category-title' and text()='Food & Health']" )
   driver.action.move_to(element).perform
   element.click
+  $driver.manage.timeouts.implicit_wait = 30
 end
 
 Then /^In "Featured Brands" check that each brand navigates to the page with brand specific items$/ do
@@ -127,9 +110,6 @@ end
 
 #Dog - Food - see 200 items verification
 Then /^In "Dog" menu go to "Food"$/ do
-  driver = $driver
-  $driver.get("http://www.petsmart.com/")
-  sleep 8
   element = $driver.find_element(:xpath, "//li[@class='ws-common-list-item pet-main-nav-item-level1']//span[@class='ws-category-title' and text()='Dog']" )
   driver.action.move_to(element).perform
   element = $driver.find_element(:xpath, "//ul[@class='ws-category-list main-nav-subcat-list main-nav-dropdown-subcat-list']//span[@class='ws-category-title' and text()='Food']" )
@@ -148,7 +128,6 @@ end
 #Dog - Food - pagination verification
 #it's failing after 16th page
 Then /^Go through all pages and print out all given items$/ do
-  driver = $driver
   totalpaginations = $driver.find_elements(:xpath, "//ul[@class='ws-product-listing-pagination-list']/li[@class='ws-product-listing-pagination-list-item']")
   sleep 5
   a = 1
@@ -166,7 +145,6 @@ Then /^Go through all pages and print out all given items$/ do
 end
 
 #Dog - Food - sorting - price high to low
-
 Then /^Set sorting to "price high to low"$/ do
   element = $driver.find_element(:xpath, "//form/select[@name='SortingAttribute']")
   element.click
@@ -174,8 +152,7 @@ Then /^Set sorting to "price high to low"$/ do
   $driver.action.move_to(element).perform
   element.click
 end
-# array == array.sort for ascending
-# and array == array.sort.reverse for descending
+
 Then /^Verify correct sorting by price high to low$/ do
   elements = $driver.find_elements(:xpath, "//span[@class='kor-product-sale-price-value ws-sale-price ws-sale-price-temporary']")
   for element in elements do
